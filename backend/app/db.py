@@ -3,6 +3,7 @@ from contextlib import contextmanager
 from neo4j import GraphDatabase
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import Engine
+from sqlalchemy.orm import declarative_base, sessionmaker
 
 from app.config import get_settings
 
@@ -13,6 +14,8 @@ pg_engine: Engine = create_engine(
     settings.POSTGRES_URL,
     pool_pre_ping=True,
 )
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=pg_engine)
+Base = declarative_base()
 
 neo4j_driver = GraphDatabase.driver(
     settings.NEO4J_URI,

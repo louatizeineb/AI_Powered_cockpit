@@ -1,0 +1,225 @@
+{
+    "$id": "https://schema.event.bpifrance.fr/dag/dataqualitycheckresult-v2",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "DataQualityCheckResult",
+    "description": "Résultat d'exécution d'un contrôle qualité sur un objet de données",
+    "x-bpi-metadata": {
+        "type": "object",
+        "required": [
+            "source"
+        ],
+        "properties": {
+            "entityNameFr": {
+                "type": "string"
+            },
+            "classification": {
+                "type": "string"
+            },
+            "source": {
+                "type": "object",
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "storage": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "owner": {
+                "type": "string"
+            },
+            "comment": {
+                "type": "string"
+            },
+            "linkedTo": {
+                "type": "array"
+            },
+            "documentation": {
+                "type": "object",
+                "properties": {
+                    "wiki": {
+                        "type": "string"
+                    },
+                    "datalink": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "source": {
+            "type": "TOPIC",
+            "storage": "kafka",
+            "name": "dag_out_DataQualityCheckResults_ini"
+        },
+        "entityNameFr": "Résultat Contrôle Qualité",
+        "owner": "DAG",
+        "comment": "Topic dédié aux résultats d'exécution des contrôles qualité",
+        "classification": "C2"
+    },
+    "entity": "DataQualityCheckResult",
+    "type": "object",
+    "required": [
+        "payload",
+        "metadata"
+    ],
+    "properties": {
+        "payload": {
+            "type": "object",
+            "required": [
+                "entity"
+            ],
+            "properties": {
+                "entity": {
+                    "type": "object",
+                    "required": [
+                        "type",
+                        "idRef",
+                        "data"
+                    ],
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "const": "DataQualityCheckResult"
+                        },
+                        "idRef": {
+                            "type": "string"
+                        },
+                        "data": {
+                            "type": "object",
+                            "required": [
+                                "applicationCode",
+                                "controlName",
+                                "executionTimestamp",
+                                "businessDate",
+                                "controlledItemCount",
+                                "okCount",
+                                "koCount",
+                                "controlTool"
+                            ],
+                            "properties": {
+                                "applicationCode": {
+                                    "type": "string"
+                                },
+                                "controlledObjectName": {
+                                    "type": "string"
+                                },
+                                "controlledObjectType": {
+                                    "type": "string"
+                                },
+                                "controlledSourceName": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                },
+                                "businessTermName": {
+                                    "type": "string"
+                                },
+                                "controlName": {
+                                    "type": "string"
+                                },
+                                "qualityDimension": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "description": "Dimension de qualité (ex : complétude, conformité, cohérence)"
+                                },
+                                "acceptanceThreshold": {
+                                    "type": [
+                                        "number",
+                                        "null"
+                                    ]
+                                },
+                                "executionTimestamp": {
+                                    "type": "string",
+                                    "format": "date-time"
+                                },
+                                "businessDate": {
+                                    "type": "string",
+                                    "format": "date"
+                                },
+                                "controlledItemCount": {
+                                    "type": "integer"
+                                },
+                                "okCount": {
+                                    "type": "integer"
+                                },
+                                "koCount": {
+                                    "type": "integer"
+                                },
+                                "controlTool": {
+                                    "type": "string"
+                                },
+                                "comment": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                },
+                                "errors": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "required": [
+                                            "code",
+                                            "description"
+                                        ],
+                                        "properties": {
+                                            "code": {
+                                                "type": "string"
+                                            },
+                                            "description": {
+                                                "type": "string"
+                                            },
+                                            "path": {
+                                                "type": [
+                                                    "string",
+                                                    "null"
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "links": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "required": [
+                                    "idRef",
+                                    "type"
+                                ],
+                                "properties": {
+                                    "idRef": {
+                                        "type": "string"
+                                    },
+                                    "type": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "metadata": {
+            "$ref": "bpi-standard-metadata"
+        },
+        "origin": {
+            "type": [
+                "object",
+                "null"
+            ]
+        }
+    }
+}

@@ -6,4 +6,6 @@ neo4j
 httpx
 pydantic
 pydantic-settings
+confluent-kafka
+jsonschema
 python-dotenv
