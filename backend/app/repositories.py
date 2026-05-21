@@ -182,6 +182,23 @@ class SearchRepository:
 
 
 class Neo4jRepository:
+    LABEL_PRIORITY = [
+        "DataProcessingItem",
+        "DataProcessing",
+        "Usage",
+        "Field",
+        "Structure",
+        "Container",
+        "Source",
+    ]
+
+    def _preferred_label(self, labels: list[str]) -> str:
+        normalized = {label.lower(): label for label in labels}
+        for preferred in self.LABEL_PRIORITY:
+            if preferred.lower() in normalized:
+                return normalized[preferred.lower()]
+        return labels[0] if labels else "Node"
+
     def get_business_subgraph(self, node_id: str, depth: int = 2) -> dict[str, Any]:
         depth = max(1, min(depth, 5))
 
@@ -224,8 +241,8 @@ class Neo4jRepository:
                     "id": node_identifier,
                     "node_id": props.get("node_id"),
                     "label": label,
-                    "type": labels[0] if labels else "Node",
-                    "properties": props,
+                    "type": self._preferred_label(labels),
+                    "properties": {**props, "labels": labels},
                 }
             )
 

@@ -1,0 +1,2 @@
+- pipeline.id: dqc-dlq-pipeline
+  path.config: "/usr/share/logstash/pipeline/dqc-dlq.conf"
