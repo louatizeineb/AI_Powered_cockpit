@@ -1,0 +1,17 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+psycopg2-binary
+neo4j
+httpx
+pydantic
+pydantic-settings
+confluent-kafka
+jsonschema
+python-dotenv
+python-multipart
+pandas
+pyarrow
+rapidfuzz>=3.9.0
+openai>=1.40.0
+azure-identity>=1.17.0

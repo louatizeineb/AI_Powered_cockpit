@@ -1,0 +1,251 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1660" viewBox="0 0 1920 1660" role="img" aria-labelledby="title desc">
+  <title id="title">AI-Powered Data Quality Cockpit - Fast Hybrid Search Functional Architecture</title>
+  <desc id="desc">Functional architecture diagram showing the React frontend, FastAPI backend, Redis cache, PostgreSQL search read model, Neo4j lineage graph, metadata import scripts, semantic ANN extension, Redpanda event pipeline, event knowledge graph, and operational audit scripts.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f6f8fb; }
+      .panel { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; rx: 18; }
+      .panel-title { fill: #0f172a; font: 700 22px Arial, sans-serif; }
+      .box { fill: #ffffff; stroke: #64748b; stroke-width: 2; rx: 14; }
+      .frontend { fill: #e0f2fe; stroke: #0284c7; }
+      .api { fill: #ede9fe; stroke: #7c3aed; }
+      .cache { fill: #fee2e2; stroke: #dc2626; }
+      .postgres { fill: #dbeafe; stroke: #2563eb; }
+      .neo4j { fill: #dcfce7; stroke: #16a34a; }
+      .script { fill: #fef3c7; stroke: #d97706; }
+      .event { fill: #ffedd5; stroke: #ea580c; }
+      .planned { fill: #f3e8ff; stroke: #9333ea; stroke-dasharray: 9 6; }
+      .deferred { fill: #f1f5f9; stroke: #64748b; stroke-dasharray: 8 6; }
+      .title { fill: #0f172a; font: 700 34px Arial, sans-serif; }
+      .subtitle { fill: #475569; font: 400 17px Arial, sans-serif; }
+      .h { fill: #0f172a; font: 700 18px Arial, sans-serif; }
+      .t { fill: #334155; font: 400 14px Arial, sans-serif; }
+      .small { fill: #475569; font: 400 12px Arial, sans-serif; }
+      .pill { fill: #f8fafc; stroke: #94a3b8; stroke-width: 1.5; rx: 14; }
+      .arrow { fill: none; stroke: #334155; stroke-width: 2.4; marker-end: url(#arrow); }
+      .arrow-soft { fill: none; stroke: #64748b; stroke-width: 2; marker-end: url(#arrow-soft); }
+      .arrow-plan { fill: none; stroke: #9333ea; stroke-width: 2.2; stroke-dasharray: 8 6; marker-end: url(#arrow-plan); }
+      .arrow-event { fill: none; stroke: #ea580c; stroke-width: 2.2; marker-end: url(#arrow-event); }
+      .label { fill: #334155; font: 700 12px Arial, sans-serif; }
+      .label-plan { fill: #7e22ce; font: 700 12px Arial, sans-serif; }
+    </style>
+    <marker id="arrow" markerWidth="11" markerHeight="8" refX="10" refY="4" orient="auto">
+      <path d="M0,0 L11,4 L0,8 z" fill="#334155"/>
+    </marker>
+    <marker id="arrow-soft" markerWidth="11" markerHeight="8" refX="10" refY="4" orient="auto">
+      <path d="M0,0 L11,4 L0,8 z" fill="#64748b"/>
+    </marker>
+    <marker id="arrow-plan" markerWidth="11" markerHeight="8" refX="10" refY="4" orient="auto">
+      <path d="M0,0 L11,4 L0,8 z" fill="#9333ea"/>
+    </marker>
+    <marker id="arrow-event" markerWidth="11" markerHeight="8" refX="10" refY="4" orient="auto">
+      <path d="M0,0 L11,4 L0,8 z" fill="#ea580c"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1920" height="1660"/>
+  <text x="60" y="58" class="title">AI-Powered Data Quality Cockpit: Fast Hybrid Search Architecture</text>
+  <text x="60" y="88" class="subtitle">PostgreSQL indexed retrieval for typed search, Neo4j for traversal, Redis for hot results, and optional pgvector ANN fallback.</text>
+
+  <rect x="1340" y="38" width="520" height="62" class="panel"/>
+  <rect x="1360" y="55" width="24" height="16" class="box"/>
+  <text x="1395" y="68" class="small">implemented/current</text>
+  <rect x="1525" y="55" width="24" height="16" class="planned"/>
+  <text x="1560" y="68" class="small">planned/optional</text>
+  <line x1="1692" y1="63" x2="1740" y2="63" class="arrow-plan"/>
+  <text x="1750" y="68" class="small">future path</text>
+
+  <!-- User interaction and API boundary -->
+  <rect x="40" y="125" width="1840" height="165" class="panel"/>
+  <text x="70" y="160" class="panel-title">1. Interactive lineage explorer</text>
+
+  <rect x="90" y="190" width="220" height="70" class="box frontend"/>
+  <text x="115" y="218" class="h">Browser user</text>
+  <text x="115" y="242" class="t">Search, expand, inspect cards</text>
+
+  <rect x="390" y="180" width="350" height="90" class="box frontend"/>
+  <text x="415" y="210" class="h">React + Vite frontend :5176</text>
+  <text x="415" y="234" class="t">Lineage Explorer and DQC Agent Cockpit</text>
+  <text x="415" y="256" class="small">AbortController cancels obsolete searches</text>
+
+  <rect x="850" y="175" width="360" height="100" class="box api"/>
+  <text x="875" y="205" class="h">FastAPI backend :8001</text>
+  <text x="875" y="230" class="t">GET /lineage/explorer/search</text>
+  <text x="875" y="250" class="t">GET /node/{id}/neighbors, /source-context</text>
+
+  <rect x="1325" y="180" width="450" height="90" class="box api"/>
+  <text x="1350" y="210" class="h">Response contract stays stable</text>
+  <text x="1350" y="234" class="t">Current lineage cards, lazy expansion, pagination</text>
+  <text x="1350" y="256" class="small">Headers: Server-Timing, X-Graph-Version, X-Cache</text>
+
+  <path d="M310 225 H390" class="arrow"/>
+  <text x="326" y="214" class="label">UI action</text>
+  <path d="M740 225 H850" class="arrow"/>
+  <text x="762" y="214" class="label">Axios HTTP</text>
+  <path d="M1210 225 H1325" class="arrow"/>
+  <text x="1230" y="214" class="label">JSON cards</text>
+
+  <!-- Search lane -->
+  <rect x="40" y="320" width="1840" height="420" class="panel"/>
+  <text x="70" y="355" class="panel-title">2. Search and lineage request path</text>
+
+  <rect x="100" y="410" width="300" height="145" class="box api"/>
+  <text x="125" y="440" class="h">LineageExplorerService</text>
+  <text x="125" y="466" class="t">Normalize request and read graph_version</text>
+  <text x="125" y="488" class="t">Build versioned cache key</text>
+  <text x="125" y="510" class="small">lineage:{version}:{namespace}:{digest}</text>
+  <text x="125" y="532" class="small">Cache failure is a bypass, not an outage</text>
+
+  <rect x="485" y="385" width="295" height="125" class="box cache"/>
+  <text x="510" y="415" class="h">Redis 7 :6379</text>
+  <text x="510" y="440" class="t">Hot search results: 15 minutes</text>
+  <text x="510" y="462" class="t">Expansions and pages: 60 minutes</text>
+  <text x="510" y="484" class="small">Old versions become unreachable automatically</text>
+
+  <rect x="485" y="560" width="360" height="145" class="box postgres"/>
+  <text x="510" y="590" class="h">PostgreSQL search read model</text>
+  <text x="510" y="614" class="t">lineage_search_document</text>
+  <text x="510" y="636" class="t">Exact, prefix, pg_trgm, full-text search</text>
+  <text x="510" y="658" class="small">lineage_search_state.active_graph_version</text>
+  <text x="510" y="680" class="small">Indexed ID list returned before graph hydration</text>
+
+  <rect x="955" y="435" width="340" height="145" class="box neo4j"/>
+  <text x="980" y="465" class="h">Neo4j catalog graph :7687</text>
+  <text x="980" y="490" class="t">Batch hydrate top candidate IDs</text>
+  <text x="980" y="512" class="t">Attach upstream/downstream flags</text>
+  <text x="980" y="534" class="t">Traverse neighbors and source context</text>
+  <text x="980" y="556" class="small">Authoritative store for graph relationships</text>
+
+  <rect x="1435" y="390" width="330" height="165" class="planned"/>
+  <text x="1460" y="420" class="h">Optional semantic ANN fallback</text>
+  <text x="1460" y="446" class="t">pgvector vector(1536) + HNSW cosine</text>
+  <text x="1460" y="468" class="t">Only when lexical confidence is weak</text>
+  <text x="1460" y="490" class="t">Cache query embeddings</text>
+  <text x="1460" y="512" class="small">Use a real embedding provider for meaning</text>
+  <text x="1460" y="534" class="small">local_hash is plumbing-only</text>
+
+  <rect x="1435" y="595" width="330" height="90" class="planned"/>
+  <text x="1460" y="625" class="h">Planned rank fusion</text>
+  <text x="1460" y="650" class="t">RRF: sum(1 / (60 + rank))</text>
+  <text x="1460" y="672" class="small">Deterministic exact-ID, path, lineage boosts</text>
+
+  <path d="M1030 275 V410 H400" class="arrow"/>
+  <text x="600" y="397" class="label">route invokes service</text>
+  <path d="M400 445 H485" class="arrow"/>
+  <text x="414" y="434" class="label">GET/SET</text>
+  <path d="M250 555 V632 H485" class="arrow"/>
+  <text x="272" y="620" class="label">cache miss</text>
+  <path d="M845 632 H900 V507 H955" class="arrow"/>
+  <text x="860" y="620" class="label">ranked IDs</text>
+  <path d="M955 545 H895 V690 H400 V520" class="arrow-soft"/>
+  <text x="628" y="710" class="label">hydrated cards and lineage flags</text>
+  <path d="M845 610 H1435" class="arrow-plan"/>
+  <text x="1030" y="598" class="label-plan">weak lexical confidence</text>
+  <path d="M1435 535 H1310 V632 H845" class="arrow-plan"/>
+  <text x="1120" y="620" class="label-plan">ANN candidate IDs</text>
+  <path d="M1435 640 H1340 V580" class="arrow-plan"/>
+
+  <!-- Publish lane -->
+  <rect x="40" y="770" width="1840" height="330" class="panel"/>
+  <text x="70" y="805" class="panel-title">3. Metadata import and atomic search publish</text>
+
+  <rect x="90" y="875" width="255" height="110" class="box script"/>
+  <text x="115" y="905" class="h">Athena / DataGalaxy exports</text>
+  <text x="115" y="930" class="t">source, container, structure, field</text>
+  <text x="115" y="952" class="t">link and usage extracts</text>
+
+  <rect x="430" y="850" width="325" height="155" class="box script"/>
+  <text x="455" y="880" class="h">Preprocessing scripts</text>
+  <text x="455" y="906" class="t">datagalaxy_preprocessing.py</text>
+  <text x="455" y="928" class="t">usage_preprocessing.py</text>
+  <text x="455" y="950" class="small">Clean names, paths, hierarchy, quality fields</text>
+  <text x="455" y="972" class="small">Write normalized catalog-ready files</text>
+
+  <rect x="840" y="850" width="315" height="155" class="box postgres"/>
+  <text x="865" y="880" class="h">PostgreSQL catalog tables</text>
+  <text x="865" y="906" class="t">source / container / structure / field</text>
+  <text x="865" y="928" class="t">link / usage</text>
+  <text x="865" y="950" class="small">Search read model is rebuilt from these rows</text>
+  <text x="865" y="972" class="small">and lineage link endpoints</text>
+
+  <rect x="1240" y="830" width="390" height="195" class="box script"/>
+  <text x="1265" y="860" class="h">Import and publish scripts</text>
+  <text x="1265" y="886" class="t">import_postgres_metadata_lineage_to_neo4j.py</text>
+  <text x="1265" y="908" class="t">apply_lineage_search_optimization.py</text>
+  <text x="1265" y="930" class="small">1. Merge nodes and relationships into Neo4j</text>
+  <text x="1265" y="952" class="small">2. refresh_lineage_search_documents()</text>
+  <text x="1265" y="974" class="small">3. Advance graph_version after successful publish</text>
+  <text x="1265" y="996" class="small">4. Old Redis keys expire naturally</text>
+
+  <path d="M345 930 H430" class="arrow"/>
+  <path d="M755 930 H840" class="arrow"/>
+  <path d="M1155 930 H1240" class="arrow"/>
+  <path d="M1435 830 V735 H665 V705" class="arrow"/>
+  <text x="892" y="724" class="label">refresh read model and graph_version</text>
+  <path d="M1630 910 H1730 V580 H1295" class="arrow"/>
+  <text x="1650" y="895" class="label">publish graph</text>
+
+  <!-- Event lane -->
+  <rect x="40" y="1130" width="1840" height="300" class="panel"/>
+  <text x="70" y="1165" class="panel-title">4. Data-quality and pipeline event path</text>
+
+  <rect x="90" y="1230" width="270" height="120" class="box event"/>
+  <text x="115" y="1260" class="h">Event sources</text>
+  <text x="115" y="1284" class="t">DQC upload / database connect API</text>
+  <text x="115" y="1306" class="t">Sample producers and pipeline events</text>
+  <text x="115" y="1328" class="small">dataquality.results.raw, pipeline.events.raw</text>
+
+  <rect x="455" y="1220" width="270" height="130" class="box event"/>
+  <text x="480" y="1250" class="h">Redpanda :9092</text>
+  <text x="480" y="1276" class="t">Kafka-compatible event broker</text>
+  <text x="480" y="1298" class="t">Raw, valid, and DLQ topics</text>
+  <text x="480" y="1320" class="small">Console: :8080 or event stack :8085</text>
+
+  <rect x="820" y="1210" width="330" height="150" class="box api"/>
+  <text x="845" y="1240" class="h">Event consumers</text>
+  <text x="845" y="1266" class="t">Schema validation and normalization</text>
+  <text x="845" y="1288" class="t">Catalog reference resolution</text>
+  <text x="845" y="1310" class="t">DQC scoring, review, and DLQ routing</text>
+  <text x="845" y="1332" class="small">run_event_consumer.py</text>
+
+  <rect x="1240" y="1175" width="300" height="115" class="box postgres"/>
+  <text x="1265" y="1205" class="h">PostgreSQL operational state</text>
+  <text x="1265" y="1231" class="t">Events, DQC results, resolutions</text>
+  <text x="1265" y="1253" class="t">Match candidates and DLQ records</text>
+  <text x="1265" y="1275" class="small">Human-review workflow persists here</text>
+
+  <rect x="1240" y="1310" width="300" height="95" class="box neo4j"/>
+  <text x="1265" y="1340" class="h">Separate Event KG :7688</text>
+  <text x="1265" y="1366" class="t">Events, runs, results, DLQ, references</text>
+  <text x="1265" y="1388" class="small">Does not replace the catalog lineage graph</text>
+
+  <rect x="1650" y="1250" width="185" height="110" class="box deferred"/>
+  <text x="1675" y="1280" class="h">Optional logs</text>
+  <text x="1675" y="1304" class="t">DLQ log files</text>
+  <text x="1675" y="1326" class="t">Elasticsearch</text>
+  <text x="1675" y="1348" class="small">Observability path</text>
+
+  <path d="M360 1285 H455" class="arrow-event"/>
+  <path d="M725 1285 H820" class="arrow-event"/>
+  <path d="M1150 1250 H1240" class="arrow-event"/>
+  <path d="M1150 1320 H1240" class="arrow-event"/>
+  <path d="M1150 1345 H1650" class="arrow-event"/>
+
+  <!-- Supporting services -->
+  <rect x="40" y="1460" width="1840" height="150" class="panel"/>
+  <text x="70" y="1495" class="panel-title">5. Supporting services and deferred intelligence</text>
+
+  <rect x="100" y="1520" width="380" height="62" class="box api"/>
+  <text x="125" y="1547" class="h">Marquez backend :5002 and UI :3000</text>
+  <text x="125" y="1569" class="small">OpenLineage-oriented companion service in Compose</text>
+
+  <rect x="565" y="1510" width="500" height="82" class="box script"/>
+  <text x="590" y="1538" class="h">Migration guardian scripts</text>
+  <text x="590" y="1562" class="t">Audit hierarchy, DP/DPI model, usage links, and targeted repairs</text>
+  <text x="590" y="1582" class="small">Use after imports to confirm graph fidelity before publishing</text>
+
+  <rect x="1160" y="1510" width="610" height="82" class="deferred"/>
+  <text x="1185" y="1538" class="h">Deferred graph embeddings and graph intelligence</text>
+  <text x="1185" y="1562" class="t">Recommendations, missing-link suggestions, anomaly detection, impact prioritization</text>
+  <text x="1185" y="1582" class="small">Offline features and reranking signals, not the first-line typed-search latency fix</text>
+</svg>

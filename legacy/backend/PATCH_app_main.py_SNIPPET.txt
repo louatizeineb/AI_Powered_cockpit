@@ -1,0 +1,13 @@
+# app/main.py patch - ADD ONLY, do not remove old routers
+
+# Add imports near your existing router imports:
+from app.dqc.resolution.routes import router as dqc_resolution_router
+from app.embeddings.routes import router as embeddings_router
+from app.agent.routes import router as dqc_agent_router
+from app.observability.routes import router as observability_router
+
+# Add includes after your existing app.include_router(...) lines:
+app.include_router(dqc_resolution_router)
+app.include_router(embeddings_router)
+app.include_router(dqc_agent_router)
+app.include_router(observability_router)

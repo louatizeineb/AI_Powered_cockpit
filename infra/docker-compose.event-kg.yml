@@ -1,0 +1,45 @@
+services:
+  redpanda:
+    image: redpandadata/redpanda:latest
+    container_name: redpanda-eventing
+    command:
+      - redpanda
+      - start
+      - --overprovisioned
+      - --smp=1
+      - --memory=1G
+      - --reserve-memory=0M
+      - --node-id=0
+      - --check=false
+      - --kafka-addr=PLAINTEXT://0.0.0.0:9092
+      - --advertise-kafka-addr=PLAINTEXT://localhost:9092
+    ports:
+      - "9092:9092"
+      - "9644:9644"
+
+  console:
+    image: redpandadata/console:latest
+    container_name: redpanda-console-eventing
+    environment:
+      KAFKA_BROKERS: redpanda:9092
+    ports:
+      - "8085:8080"
+    depends_on:
+      - redpanda
+
+  event-neo4j:
+    image: neo4j:5-community
+    container_name: neo4j-event-kg
+    ports:
+      - "7475:7474"
+      - "7688:7687"
+    environment:
+      NEO4J_AUTH: neo4j/${EVENT_NEO4J_PASSWORD:-change_me}
+      NEO4J_server_memory_heap_initial__size: 1G
+      NEO4J_server_memory_heap_max__size: 2G
+      NEO4J_server_memory_pagecache_size: 1G
+    volumes:
+      - event_neo4j_data:/data
+
+volumes:
+  event_neo4j_data:
