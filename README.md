@@ -40,3 +40,4 @@ docker compose -f infra/docker-compose.yml up -d
 ```
 
 The architecture guide is in [docs/architecture/FAST_HYBRID_SEARCH_ARCHITECTURE.md](docs/architecture/FAST_HYBRID_SEARCH_ARCHITECTURE.md).
+Agent readiness and publish-control guidance is in [docs/AGENT_READINESS.md](docs/AGENT_READINESS.md).

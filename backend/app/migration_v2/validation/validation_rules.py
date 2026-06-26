@@ -1,0 +1,3 @@
+FORBIDDEN_ENTITY_JOIN_COLUMNS = {"v_ident_works"}
+
+GRAPH_ELIGIBLE_STATUSES = "all"

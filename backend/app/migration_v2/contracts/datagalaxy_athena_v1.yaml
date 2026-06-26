@@ -1,0 +1,507 @@
+{
+  "contract_name": "datagalaxy_athena_v1",
+  "contract_version": "1.1.0",
+  "description": "DataGalaxy Athena export mapping contract externalized from the v1 preprocessing and Neo4j importer mappings.",
+  "global_rules": {
+    "workspace_column": "v_ident_works",
+    "forbidden_join_columns": [
+      "v_ident_works"
+    ],
+    "primary_id_column": "v_tech_ident_entt",
+    "parent_id_column": "v_drct_prnt_entt_ident",
+    "status_column": "v_status_entt",
+    "graph_status_policy": "include_all_statuses",
+    "preserve_unknown_columns": true,
+    "universal_hierarchy_rule": "parent.v_tech_ident_entt = child.v_drct_prnt_entt_ident"
+  },
+  "status_policy": {
+    "graph_status_policy": "include_all_statuses",
+    "preserve_in_staging": "all",
+    "graph_eligible_statuses": "all",
+    "status_is_audit_metadata_only": true
+  },
+  "typing_rules": {
+    "trim_text": true,
+    "empty_string_is_null": true,
+    "identifier_columns": [
+      "v_tech_ident_entt",
+      "v_drct_prnt_entt_ident",
+      "v_ident_tech_entt_output"
+    ],
+    "integer_columns": [
+      "n_chil_count",
+      "n_col_size"
+    ],
+    "numeric_columns": [
+      "n_perc_doc",
+      "n_perc_fonc_topic",
+      "n_perc_fonc_data",
+      "n_perc_lib_fr",
+      "n_perc_glos_data",
+      "n_perc_sourc_data"
+    ],
+    "boolean_columns": [
+      "b_event_conf_schema",
+      "b_topic_conf_ent",
+      "b_topic_exh_data",
+      "b_topic_desc",
+      "b_mdt",
+      "b_primr_key",
+      "b_frgn_key",
+      "b_tech_data",
+      "b_loca_data",
+      "b_gdpr_pers_data",
+      "b_gdpr_sensi_data"
+    ]
+  },
+  "boolean_normalization": {
+    "true_values": [
+      true,
+      1,
+      "1",
+      "true",
+      "t",
+      "yes",
+      "y",
+      "oui",
+      "o"
+    ],
+    "false_values": [
+      false,
+      0,
+      "0",
+      "false",
+      "f",
+      "no",
+      "n",
+      "non"
+    ],
+    "unknown_policy": "preserve_null_and_record_finding"
+  },
+  "date_parsing_policy": {
+    "timezone": "UTC",
+    "accepted_formats": [
+      "%Y-%m-%d",
+      "%Y-%m-%d %H:%M:%S",
+      "%Y-%m-%d %H:%M:%S.%f",
+      "%Y-%m-%dT%H:%M:%S",
+      "%Y-%m-%dT%H:%M:%S.%f",
+      "%d/%m/%Y",
+      "%d/%m/%Y %H:%M:%S"
+    ],
+    "on_parse_error": "preserve_raw_and_record_finding"
+  },
+  "unknown_columns_policy": {
+    "preserve_unknown_columns": true,
+    "target_field": "unknown_columns",
+    "include_in_raw_payload": true,
+    "note": "Columns not listed in this contract are still retained in raw_payload and unknown_columns."
+  },
+  "tables": {
+    "diso_dico_source": {
+      "canonical_table": "source",
+      "object_type": "Source",
+      "required_columns": [
+        "v_tech_ident_entt"
+      ],
+      "columns": {
+        "export_date": "d_extract",
+        "workspace_id": "v_ident_works",
+        "node_id": "v_tech_ident_entt",
+        "version_id": "v_ident_vers",
+        "name_label": "v_func_name_entt",
+        "name_tech": "v_tech_name_entt",
+        "path_full": "v_path",
+        "path_type": "v_type_path",
+        "entity_type": "v_type_entt",
+        "data_type": "v_data_type_entt",
+        "dlk_api_path": "v_loct_entt_dlk",
+        "dlk_url": "v_url_entt_dlk",
+        "children_count": "n_chil_count",
+        "status": "v_status_entt",
+        "description": "v_desc_entt",
+        "created_at": "s_cre_entt",
+        "updated_at": "s_last_modif_entt",
+        "doc_pct": "n_perc_doc",
+        "security_comment": "v_class_cmnt",
+        "app_code": "c_applic",
+        "techno": "v_curr_techno",
+        "validated_at": "d_valid",
+        "host_mode": "v_host_mode",
+        "security_level": "v_lvl_class",
+        "tech_code": "c_techno",
+        "train_app": "v_train_applic"
+      }
+    },
+    "dict_dico_container": {
+      "canonical_table": "container",
+      "object_type": "Container",
+      "required_columns": [
+        "v_tech_ident_entt",
+        "v_drct_prnt_entt_ident"
+      ],
+      "columns": {
+        "export_date": "d_extract",
+        "workspace_id": "v_ident_works",
+        "node_id": "v_tech_ident_entt",
+        "version_id": "v_ident_vers",
+        "name_label": "v_func_name_entt",
+        "name_tech": "v_tech_name_entt",
+        "path_full": "v_path",
+        "path_type": "v_type_path",
+        "entity_type": "v_type_entt",
+        "data_type": "v_data_type_entt",
+        "dlk_api_path": "v_loct_entt_dlk",
+        "dlk_url": "v_url_entt_dlk",
+        "children_count": "n_chil_count",
+        "status": "v_status_entt",
+        "description": "v_desc_entt",
+        "created_at": "s_cre_entt",
+        "updated_at": "s_last_modif_entt",
+        "doc_pct": "n_perc_doc",
+        "security_comment": "v_class_cmnt",
+        "app_code": "c_applic",
+        "techno": "v_curr_techno",
+        "validated_at": "d_valid",
+        "host_mode": "v_host_mode",
+        "security_level": "v_lvl_class",
+        "tech_code": "c_techno",
+        "train_app": "v_train_applic",
+        "parent_node_id": "v_drct_prnt_entt_ident",
+        "parent_type": "v_drct_prnt_entt_type",
+        "parent_data_type": "v_drct_prnt_entt_data_type"
+      }
+    },
+    "dist_dico_structure": {
+      "canonical_table": "structure",
+      "object_type": "Structure",
+      "required_columns": [
+        "v_tech_ident_entt",
+        "v_drct_prnt_entt_ident"
+      ],
+      "columns": {
+        "export_date": "d_extract",
+        "workspace_id": "v_ident_works",
+        "node_id": "v_tech_ident_entt",
+        "version_id": "v_ident_vers",
+        "name_label": "v_func_name_entt",
+        "name_tech": "v_tech_name_entt",
+        "path_full": "v_path",
+        "path_type": "v_type_path",
+        "entity_type": "v_type_entt",
+        "data_type": "v_data_type_entt",
+        "dlk_api_path": "v_loct_entt_dlk",
+        "dlk_url": "v_url_entt_dlk",
+        "children_count": "n_chil_count",
+        "status": "v_status_entt",
+        "summary": "v_summary",
+        "description": "v_desc_entt",
+        "created_at": "s_cre_entt",
+        "updated_at": "s_last_modif_entt",
+        "validated_at": "d_valid",
+        "train_app": "v_train_applic",
+        "doc_pct": "n_perc_doc",
+        "primary_key_name": "v_primr_key_tech_name",
+        "tech_comment": "v_tech_cmnt",
+        "parent_node_id": "v_drct_prnt_entt_ident",
+        "parent_type": "v_drct_prnt_entt_type",
+        "parent_data_type": "v_drct_prnt_entt_data_type",
+        "kafka_topic_type": "v_type_topic",
+        "doc_pct_func": "n_perc_fonc_topic",
+        "doc_pct_data": "n_perc_fonc_data",
+        "doc_pct_label_fr": "n_perc_lib_fr",
+        "doc_pct_glossary": "n_perc_glos_data",
+        "doc_pct_source": "n_perc_sourc_data",
+        "kafka_conforms_to_entity": "b_topic_conf_ent",
+        "kafka_data_exhaustive": "b_topic_exh_data",
+        "kafka_has_description": "b_topic_desc",
+        "kafka_schema_registry_compliant": "b_event_conf_schema"
+      }
+    },
+    "difi_dico_field": {
+      "canonical_table": "field",
+      "object_type": "Field",
+      "required_columns": [
+        "v_tech_ident_entt",
+        "v_drct_prnt_entt_ident"
+      ],
+      "columns": {
+        "export_date": "d_extract",
+        "workspace_id": "v_ident_works",
+        "node_id": "v_tech_ident_entt",
+        "version_id": "v_ident_vers",
+        "name_label": "v_func_name_entt",
+        "name_tech": "v_tech_name_entt",
+        "path_full": "v_path",
+        "path_type": "v_type_path",
+        "entity_type": "v_type_entt",
+        "data_type": "v_data_type_entt",
+        "dlk_api_path": "v_loct_entt_dlk",
+        "dlk_url": "v_url_entt_dlk",
+        "children_count": "n_chil_count",
+        "status": "v_status_entt",
+        "summary": "v_summary",
+        "description": "v_desc_entt",
+        "created_at": "s_cre_entt",
+        "updated_at": "s_last_modif_entt",
+        "app_code": "c_applic",
+        "validated_at": "d_valid",
+        "tech_comment": "v_tech_cmnt",
+        "security_level": "v_lvl_class",
+        "security_comment": "v_class_cmnt",
+        "train_app": "v_train_applic",
+        "is_mandatory": "b_mdt",
+        "is_primary_key": "b_primr_key",
+        "is_foreign_key": "b_frgn_key",
+        "is_technical": "b_tech_data",
+        "is_gdpr_personal": "b_gdpr_pers_data",
+        "is_gdpr_sensitive": "b_gdpr_sensi_data",
+        "class_propagation": "v_class_propagation",
+        "dacp_propagation": "v_dacp_propagation",
+        "col_size": "n_col_size",
+        "col_data_type": "v_col_data_type",
+        "col_type_size": "v_col_data_type_size",
+        "parent_node_id": "v_drct_prnt_entt_ident",
+        "parent_type": "v_drct_prnt_entt_type",
+        "parent_data_type": "v_drct_prnt_entt_data_type",
+        "is_local_data": "b_loca_data",
+        "is_golden_source": "v_donnee_golden_source"
+      }
+    },
+    "lien_link_entt": {
+      "canonical_table": "link",
+      "relationship_table": true,
+      "required_columns": [
+        "v_tech_ident_entt",
+        "v_ident_tech_entt_output",
+        "v_desc_nature_link"
+      ],
+      "columns": {
+        "export_date": "d_extract",
+        "workspace_id": "v_ident_works",
+        "src_node_id": "v_tech_ident_entt",
+        "src_name_label": "v_func_name_entt",
+        "src_name_tech": "v_tech_name_entt",
+        "src_entity_type": "v_type_entt",
+        "src_data_type": "v_data_type_entt",
+        "link_type": "v_desc_nature_link",
+        "tgt_node_id": "v_ident_tech_entt_output",
+        "tgt_name_label": "v_name_func_entt_output",
+        "tgt_name_tech": "v_name_tech_entt_output",
+        "tgt_entity_type": "v_name_type_entt_output",
+        "tgt_data_type": "v_name_data_type_entt_output",
+        "tgt_path_type": "v_name_type_path_entt_output",
+        "tgt_path": "v_name_path_entt_output"
+      }
+    },
+    "usag_usage": {
+      "canonical_table": "usage",
+      "object_type": "Usage",
+      "required_columns": [
+        "v_tech_ident_entt"
+      ],
+      "columns": {
+        "node_id": "v_tech_ident_entt",
+        "usage_uuid": "v_tech_ident_entt",
+        "export_date": "d_extract",
+        "workspace_id": "v_ident_works",
+        "version_id": "v_ident_vers",
+        "name_label": "v_func_name_entt",
+        "usage_name": "v_func_name_entt",
+        "name_tech": "v_tech_name_entt",
+        "usage_tech_name": "v_tech_name_entt",
+        "path_full": "v_path",
+        "usage_path": "v_path",
+        "usage_type_path": "v_type_path",
+        "data_type": "v_data_type_entt",
+        "entity_type": "v_type_entt",
+        "usage_kind": "v_type_entt",
+        "dlk_api_path": "v_loct_entt_dlk",
+        "dlk_url": "v_url_entt_dlk",
+        "children_count": "n_chil_count",
+        "status": "v_status_entt",
+        "classification_level": "v_lvl_class",
+        "classification_level_dlk": "v_lvl_class_dlk",
+        "classification_comment": "v_class_cmnt",
+        "doc_pct_classification": "n_perc_progres_doc_class",
+        "doc_pct_dacp": "n_perc_progres_doc_dacp",
+        "doc_pct_glossary": "n_perc_progres_doc_glos",
+        "doc_pct_output": "n_perc_progres_doc_output",
+        "doc_pct_dict_glossary": "n_perc_progres_doc_dico_glos",
+        "doc_pct_dict_usage": "n_perc_progres_doc_dico_us",
+        "doc_pct_usage_glossary": "n_perc_progres_doc_us_glos",
+        "doc_pct_storage": "n_perc_progres_doc_storg",
+        "doc_pct_process_input": "n_perc_progres_doc_prcs_input",
+        "doc_pct_process_output": "n_perc_progres_doc_prcs_output",
+        "doc_pct_operational_usage": "n_perc_progres_doc_oprl_us",
+        "doc_pct_auto_computed": "n_perc_calc_autom_applic_doc",
+        "doc_pct_target": "n_perc_targ_doc",
+        "doc_pct_applied_dlk": "n_perc_applic_doc_dlk",
+        "app_code": "c_applic",
+        "operational_entity_code": "c_entt_oprl",
+        "app_base_code": "c_base_applic",
+        "app_base_name": "v_applic_base_name",
+        "app_base_cpc": "v_applic_base_cpc",
+        "app_base_domain": "v_applic_base_doma",
+        "app_base_manager": "v_base_applic_mng",
+        "app_criticality": "v_applic_criticity",
+        "app_status": "v_applic_stt",
+        "app_status_nextgen": "v_applic_stt_nextgen",
+        "app_strategic_status": "v_strat_applic",
+        "hosting_mode": "v_host_mode",
+        "production_domain": "v_prodn_doma",
+        "operational_entity": "v_oprl_entt",
+        "update_frequency": "v_freq",
+        "frequency_comment": "v_cmnt_freq",
+        "operational_purge_rule": "v_oprl_purge",
+        "is_gdpr_personal": "b_gdpr_pers_data",
+        "is_gdpr_sensitive": "b_gdpr_sensi_data",
+        "is_localized_data": "b_loca_data",
+        "is_eligible_dq_dashboard": "b_elig_data_qlty_dashboard",
+        "quality_requirements": "v_qlty_reqr",
+        "quality_criteria": "v_qlty_crit",
+        "documentation_criticality": "v_doc_criy",
+        "status_comment": "v_cmnt_stt",
+        "acceptance_threshold": "n_accept_thres",
+        "contains_dacp_data": "v_contains_dacp",
+        "data_retention_period": "v_data_retention_per",
+        "purge_rule": "v_purge_rule",
+        "purge_feature_available": "v_purge_featr_avlb",
+        "purge_activation_mode": "v_purge_activ_mode",
+        "operational_purge_status": "v_oper_purge",
+        "purge_frequency": "v_purge_freq",
+        "purge_arbitration": "v_purge_arbitration",
+        "purge_method_validated": "v_val_purge_methd",
+        "classification_propagation": "v_class_propagation",
+        "dacp_propagation": "v_dacp_propagation",
+        "dependency_other_db": "v_dependency_othr_db",
+        "underlying_data": "v_underlying",
+        "dataset_ref": "v_dataset",
+        "dataset_filiere": "v_dataset_filiere",
+        "it_contact": "v_ctct_it",
+        "bpi_process_owner": "v_bpi_prcs_resp",
+        "justification": "v_justif",
+        "english_label": "v_en_l",
+        "perimeter": "v_perim",
+        "functional_grouping": "v_regroup_fonc",
+        "usage_link_id": "v_ident_us",
+        "programming_language": "v_prgl_name_edit",
+        "is_optional_control": "b_ctrl_opt",
+        "created_at": "s_cre_entt",
+        "updated_at": "s_last_modif_entt",
+        "validated_at": "d_valid",
+        "dacp_review_date": "d_review_data_dacp",
+        "classification_review_date": "d_review_data_class",
+        "doc_pct_last_updated_at": "d_updt_perc_doc",
+        "release_date": "d_release",
+        "target_doc_percent_name": "v_name_add_targ_doc_perc",
+        "target_doc_percent_url": "v_url_add_targ_doc_perc",
+        "neurn_link_name": "v_name_link_to_neurn",
+        "neurn_url": "v_url_neurn",
+        "summary": "v_summary",
+        "description": "v_desc_entt",
+        "train_app": "v_train_applic",
+        "parent_node_id": "v_drct_prnt_entt_ident",
+        "parent_uuid": "v_drct_prnt_entt_ident",
+        "parent_type": "v_drct_prnt_entt_type",
+        "parent_data_type": "v_drct_prnt_entt_data_type"
+      }
+    }
+  },
+  "relationship_mappings": {
+    "IsInputOf": {
+      "canonical_type": "IS_INPUT_OF",
+      "family": "technical_lineage"
+    },
+    "IsOutputOf": {
+      "canonical_type": "IS_OUTPUT_OF",
+      "family": "technical_lineage"
+    },
+    "Uses": {
+      "canonical_type": "USES",
+      "family": "usage"
+    },
+    "IsUsedBy": {
+      "canonical_type": "IS_USED_BY",
+      "family": "usage"
+    },
+    "Calls": {
+      "canonical_type": "CALLS",
+      "family": "execution"
+    },
+    "IsCalledBy": {
+      "canonical_type": "IS_CALLED_BY",
+      "family": "execution"
+    },
+    "Implements": {
+      "canonical_type": "IMPLEMENTS",
+      "family": "semantic",
+      "source_label": "Field",
+      "target_label": "BusinessTerm"
+    },
+    "IsImplementedBy": {
+      "canonical_type": "IS_IMPLEMENTED_BY",
+      "family": "semantic"
+    },
+    "Generalizes": {
+      "canonical_type": "GENERALIZES",
+      "family": "semantic"
+    },
+    "Specializes": {
+      "canonical_type": "SPECIALIZES",
+      "family": "semantic"
+    },
+    "IsLinkedTo": {
+      "canonical_type": "IS_LINKED_TO",
+      "family": "generic"
+    },
+    "Regroups": {
+      "canonical_type": "REGROUPS",
+      "family": "semantic"
+    },
+    "IsPartOfDimension": {
+      "canonical_type": "IS_PART_OF_DIMENSION",
+      "family": "semantic"
+    },
+    "HasForSource": {
+      "canonical_type": "HAS_FOR_SOURCE",
+      "family": "lineage_context"
+    },
+    "IsSourceOf": {
+      "canonical_type": "IS_SOURCE_OF",
+      "family": "lineage_context"
+    },
+    "HasForUniverse": {
+      "canonical_type": "HAS_FOR_UNIVERSE",
+      "family": "semantic"
+    },
+    "IsUniverseOf": {
+      "canonical_type": "IS_UNIVERSE_OF",
+      "family": "semantic"
+    },
+    "HasForRecordingSystem": {
+      "canonical_type": "HAS_FOR_RECORDING_SYSTEM",
+      "family": "system_context"
+    },
+    "IsRecordingSystemFor": {
+      "canonical_type": "IS_RECORDING_SYSTEM_FOR",
+      "family": "system_context"
+    },
+    "IsUsageSourceFor": {
+      "canonical_type": "IS_USAGE_SOURCE_FOR",
+      "family": "usage"
+    },
+    "IsUsageDestinationFor": {
+      "canonical_type": "IS_USAGE_DESTINATION_FOR",
+      "family": "usage"
+    },
+    "IsUsedForComputationOf": {
+      "canonical_type": "IS_USED_FOR_COMPUTATION_OF",
+      "family": "technical_lineage"
+    },
+    "IsSynonymOf": {
+      "canonical_type": "IS_SYNONYM_OF",
+      "family": "semantic"
+    }
+  }
+}

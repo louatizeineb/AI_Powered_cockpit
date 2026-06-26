@@ -19,6 +19,7 @@ ENV/
 .env.*
 *.env
 *.env.*
+configs/migration_v2/local_env.yaml
 **/.env
 **/.env.*
 !.env.example
@@ -52,6 +53,7 @@ Thumbs.db
 *.sw?
 
 # Runtime / generated outputs
+reports/
 backend/benchmark_results/
 scripts/*_audit.csv
 **/data/

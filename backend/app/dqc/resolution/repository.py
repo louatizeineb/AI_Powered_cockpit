@@ -8,6 +8,8 @@ from app.db import SessionLocal
 
 def reset_workspace() -> dict:
     tables = [
+        "dqc_agent_proposal",
+        "dqc_agent_run",
         "dqc_match_candidate",
         "dqc_resolved",
         "dqc_dlq",
@@ -16,9 +18,15 @@ def reset_workspace() -> dict:
         "pipeline_logs",
     ]
     with SessionLocal() as db:
-        db.execute(text(f"TRUNCATE TABLE {', '.join(tables)} RESTART IDENTITY CASCADE"))
+        existing = [
+            table
+            for table in tables
+            if db.execute(text("SELECT to_regclass(:table_name)"), {"table_name": f"public.{table}"}).scalar()
+        ]
+        if existing:
+            db.execute(text(f"TRUNCATE TABLE {', '.join(existing)} RESTART IDENTITY CASCADE"))
         db.commit()
-    return {"status": "reset", "tables": tables}
+    return {"status": "reset", "tables": existing}
 
 
 def _clean_json_value(value: Any) -> Any:

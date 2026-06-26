@@ -1,0 +1,27 @@
+flowchart TB
+    user["Human operator"] --> gates["Human approval gates"]
+
+    export["ExportDetectionAgent<br/>Mission: detect or register raw exports<br/>Tools: 01_register_export.py, filesystem inspection<br/>Output: export run and raw file records<br/>Approval: required when identity is ambiguous"]
+    profiling["SchemaProfilingAgent<br/>Mission: profile raw tables and column evidence<br/>Tools: 02_profile_export.py, raw_export_profiler.py<br/>Output: column profiles and schema summary<br/>Approval: no, unless files are missing"]
+    docs["DocumentationAgent<br/>Mission: explain mapping, validation, and run evidence<br/>Tools: report_writer.py, docs templates<br/>Output: Markdown run notes and operator packet<br/>Approval: no"]
+    mapping["MappingAgent<br/>Mission: compare raw schema to contract and propose mappings<br/>Tools: 03_detect_schema_drift.py, contract_loader.py, mapping_engine.py<br/>Output: drift report and mapping decisions<br/>Approval: yes for drift or inferred mapping"]
+    preprocessing["PreprocessingAgent<br/>Mission: transform raw export to canonical staging<br/>Tools: 05_preprocess_to_staging.py, cleaners.py, normalizers.py, type_parsers.py<br/>Output: catalog object and relationship staging rows<br/>Approval: yes for repairs or exclusions"]
+    guardian["ValidationGuardianAgent<br/>Mission: block unsafe graph writes and explain findings<br/>Tools: 06_validate_staging.py, validators.py, validation_rules.py<br/>Output: validation findings and gate recommendation<br/>Approval: yes for warnings, repairs, or overrides"]
+    graph["GraphBuilderAgent<br/>Mission: build candidate Neo4j graph version<br/>Tools: 07_build_graph.py, neo4j_schema.py, graph_builder.py<br/>Output: candidate graph and build report<br/>Approval: yes before production publish"]
+    paths["LineagePathAgent<br/>Mission: materialize lineage paths and coverage metrics<br/>Tools: 08_generate_lineage_paths.py, lineage_path_builder.py<br/>Output: lineage_path rows or LineagePath nodes<br/>Approval: conditional on coverage regression"]
+    audit["AuditAgent<br/>Mission: audit candidate graph and compare with baseline v0<br/>Tools: 09_audit_and_compare.py, graph_auditor.py, benchmark_service.py<br/>Output: audit and benchmark report<br/>Approval: yes for publish"]
+    report["ReportAgent<br/>Mission: assemble final operational evidence<br/>Tools: report_writer.py and generated JSON reports<br/>Output: final migration packet<br/>Approval: yes for publish packet sign-off"]
+
+    export --> profiling --> mapping --> preprocessing --> guardian --> graph --> paths --> audit --> report
+
+    mapping --> gates
+    preprocessing --> gates
+    guardian --> gates
+    graph --> gates
+    audit --> gates
+    report --> gates
+
+    gates --> approved["Approved deterministic action"]
+    approved --> preprocessing
+    approved --> graph
+    approved --> publish["Publish active graph version"]

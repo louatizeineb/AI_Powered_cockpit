@@ -1,0 +1,30 @@
+flowchart LR
+    raw["Raw DataGalaxy / Athena exports"] --> preprocess["Old preprocessing scripts<br/>datagalaxy_preprocessing.py<br/>usage_preprocessing.py"]
+    preprocess --> pg["PostgreSQL catalog tables<br/>source / container / structure / field / link / usage"]
+    pg --> importer["import_postgres_metadata_lineage_to_neo4j.py"]
+    importer --> neo4j["Neo4j graph<br/>DataGalaxyObject, Source, Container,<br/>Structure, Field, Usage, BusinessTerm"]
+    neo4j --> refresh["refresh_lineage_search_documents()"]
+    refresh --> search["PostgreSQL lineage search read model<br/>lineage_search_document<br/>lineage_search_state"]
+    search --> redis["Redis graph version cache"]
+    redis --> frontend["Frontend lineage explorer"]
+    neo4j --> frontend
+
+    pg --> hierarchy["Hierarchy from parent_node_id<br/>parent.v_tech_ident_entt = child.v_drct_prnt_entt_ident"]
+    hierarchy --> importer
+
+    pg --> lineage["Lineage from link table<br/>link_type mapping<br/>Implements -> IMPLEMENTS"]
+    lineage --> importer
+
+    pg --> usage["Usage links<br/>app_code and dataset_ref matching"]
+    usage --> importer
+
+    limitations["Limitations"]
+    limitations --> hardcoded["Hardcoded or implicit mappings"]
+    limitations --> drift["Weak schema drift handling"]
+    limitations --> validation["Mostly post-load validation"]
+    limitations --> adaptation["Difficult adaptation to new raw exports"]
+
+    hardcoded -.-> preprocess
+    drift -.-> preprocess
+    validation -.-> importer
+    adaptation -.-> raw

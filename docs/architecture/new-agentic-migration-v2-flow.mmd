@@ -1,0 +1,36 @@
+flowchart LR
+    raw["New raw export detected"] --> detect["Export Detection Agent"]
+    detect --> registry["Raw export registry<br/>migration_export_run<br/>migration_raw_file"]
+    registry --> profile["Schema Profiling Agent"]
+    profile --> kg["Schema Intelligence KG<br/>profiles, drift history, evidence"]
+    kg --> mapping["Mapping Agent"]
+    mapping --> gate1{"Human Gate<br/>approve mapping / drift"}
+    gate1 --> preprocess["Preprocessing Agent"]
+    preprocess --> staging["Canonical PostgreSQL staging<br/>catalog_object_staging<br/>catalog_relationship_staging"]
+    staging --> validation["Validation Guardian Agent"]
+    validation --> gate2{"Human Gate<br/>approve repairs / warnings"}
+    gate2 --> graphbuilder["Graph Builder Agent"]
+    graphbuilder --> graphNode["Neo4j Catalog Graph v2<br/>candidate graph version"]
+    graphNode --> paths["Lineage Path Agent"]
+    paths --> pathmodel["lineage_path table<br/>optional LineagePath nodes"]
+    pathmodel --> audit["Audit Agent"]
+    audit --> compare["Baseline comparison<br/>against old migration v0"]
+    compare --> gate3{"Human Gate<br/>publish approval"}
+    gate3 --> refresh["refresh search read model"]
+    refresh --> active["active_graph_version"]
+    active --> frontend["Frontend lineage explorer"]
+
+    contract["Versioned mapping contract<br/>datagalaxy_athena_v1.yaml"] --> mapping
+    contract --> preprocess
+    contract --> validation
+
+    baseline["Old migration v0 baseline<br/>import_postgres_metadata_lineage_to_neo4j.py"] --> compare
+
+    reports["JSON / Markdown reports<br/>reports/migration_v2/{export_id}"] --- registry
+    reports --- profile
+    reports --- validation
+    reports --- audit
+
+    policy["Graph policy<br/>all statuses included<br/>status preserved as audit metadata"] --> preprocess
+    forbidden["Forbidden entity join key<br/>v_ident_works"] --> mapping
+    forbidden --> validation
