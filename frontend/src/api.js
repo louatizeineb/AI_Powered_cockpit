@@ -29,8 +29,8 @@ function normalizeApiError(error) {
     if (data.detail) return typeof data.detail === "string" ? data.detail : JSON.stringify(data.detail, null, 2);
     return JSON.stringify(data, null, 2);
   }
-  if (error?.code === "ERR_NETWORK") {
-    return "Network Error: backend unreachable or CORS blocked the request.";
+  if (error?.code === "ERR_NETWORK" || error?.code === "ECONNABORTED") {
+    return `Backend unavailable — check API URL (${API_BASE_URL}). Confirm the backend is running and VITE_API_BASE_URL is correct.`;
   }
   return error?.message || "Unknown API error";
 }
