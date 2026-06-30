@@ -20,7 +20,6 @@ import {
   runMigrationAction,
 } from "../../api";
 import RecordInspector from "../../components/RecordInspector";
-import TutorialOverlay from "../../components/TutorialOverlay";
 
 const NAV = [
   ["overview", "Overview", LayoutDashboard],
@@ -79,105 +78,6 @@ const ISSUE_BUCKETS = [
     status: "",
     policy: "block",
     description: "Explicit stop signs until a human changes the decision.",
-  },
-];
-
-const GOVERNANCE_TUTORIALS = [
-  {
-    key: "overview",
-    title: "Overview",
-    summary: "Your release home base. It tells you whether the trusted graph can be published and what to do next.",
-    purpose: "Use this screen first. It summarizes readiness, blockers, trusted/quarantined counts, workflow state, and the safest next action.",
-    controls: [
-      { label: "Active export", description: "Chooses which migration export you are reviewing." },
-      { label: "Refresh", description: "Reloads the evidence for the screen you are currently using." },
-      { label: "Can I publish? banner", description: "Shows the current release answer and gives one primary next step." },
-      { label: "Review blockers / Publish review", description: "Moves you directly to the screen that needs attention." },
-      { label: "Assistant", description: "Opens the plain-language governance chat for questions about the current evidence." },
-    ],
-    tips: [
-      "Start here before clicking technical checks.",
-      "If the banner says Review needed, do not go straight to Publish.",
-      "Use the evidence inspector by clicking blockers or records.",
-    ],
-  },
-  {
-    key: "validation",
-    title: "Review issues",
-    summary: "The decision queue. This is where risky or unclear migration evidence gets accepted, quarantined, repaired, or blocked.",
-    purpose: "Use this screen to decide what can enter the trusted graph and what must stay out of normal search and lineage.",
-    controls: [
-      { label: "Resolution buckets", description: "Groups issues by what you can do next: decide, quarantine, repair, accept, remove, or block." },
-      { label: "Recalculate readiness", description: "Applies the latest queue decisions into trusted/quarantine/repair publication states." },
-      { label: "Reviewer", description: "Records who made the decision." },
-      { label: "Decision rationale", description: "Stores the human explanation attached to any decision you apply." },
-      { label: "Ask agent", description: "Uses the governance assistant and provenance context to explain the issue in plain language." },
-      { label: "Accept into trusted", description: "Approves the item for the trusted graph after readiness is recalculated." },
-      { label: "Keep quarantined", description: "Keeps the item as evidence but excludes it from normal search and lineage." },
-      { label: "Remove from trusted", description: "Retains the issue as evidence but excludes it from the trusted graph." },
-      { label: "Needs repair / Mark repaired", description: "Keeps structural problems blocking until repair evidence is accepted." },
-      { label: "Block publish", description: "Creates an explicit stop sign until a reviewer changes the decision." },
-    ],
-    tips: [
-      "Prefer quarantine when evidence is bounded but not safe enough for users.",
-      "Use repair only when a real structural fix is needed.",
-      "Click a row before deciding if the recommendation is not obvious.",
-    ],
-  },
-  {
-    key: "checks",
-    title: "Release checks",
-    summary: "Technical readiness, grouped in one place: schema, trusted graph, quarantine, and search.",
-    purpose: "Use this screen after review decisions to validate that the trusted candidate graph and search index are safe for release.",
-    controls: [
-      { label: "Export structure", description: "Shows profiled tables and columns from the Schema Intelligence KG." },
-      { label: "Schema mapping review", description: "Shows unresolved contract or column mapping proposals." },
-      { label: "Validate trusted graph", description: "Runs a candidate graph dry-run from trusted rows only." },
-      { label: "Apply trusted-only view", description: "Removes quarantined objects from the candidate graph view." },
-      { label: "Refresh candidate index", description: "Rebuilds the candidate search documents from trusted data." },
-      { label: "Run benchmark", description: "Checks search latency, result shape, cache behavior, and graph version headers." },
-    ],
-    tips: [
-      "Run this after Review issues changes and before Publish.",
-      "A fast p95 alone is not enough; benchmark case status must pass.",
-      "Quarantined items should remain visible here but hidden from normal APIs.",
-    ],
-  },
-  {
-    key: "publish",
-    title: "Publish",
-    summary: "The controlled activation step. Dry-run first, then publish only when gates pass.",
-    purpose: "Use this screen to verify final readiness and promote the trusted graph version after explicit human approval.",
-    controls: [
-      { label: "Release readiness", description: "Shows final blockers from the latest publish or readiness report." },
-      { label: "Approver", description: "Records the person approving activation." },
-      { label: "Run publish dry-run", description: "Checks whether publish would succeed without changing the active graph." },
-      { label: "Publish trusted graph", description: "Promotes the trusted candidate graph only when all gates pass." },
-      { label: "Publish disabled reason", description: "Explains exactly why the publish button is unavailable." },
-    ],
-    tips: [
-      "Never skip dry-run.",
-      "If publish is disabled, follow the disabled reason rather than retrying.",
-      "Publication affects the graph/search version used by normal application endpoints.",
-    ],
-  },
-  {
-    key: "agents",
-    title: "Evidence trail",
-    summary: "The audit history behind the release: agents, tools, approvals, and cited explanations.",
-    purpose: "Use this screen when someone asks who did what, when, with which evidence, and why.",
-    controls: [
-      { label: "Agent runs", description: "Shows agent executions, modes, counts, and statuses." },
-      { label: "Approval interrupts", description: "Shows human approval gates requested by the workflow." },
-      { label: "Allowlisted tool executions", description: "Shows controlled script/tool runs, input hashes, versions, and outcomes." },
-      { label: "Governance GraphRAG", description: "Retrieves cited explanations from governance provenance." },
-      { label: "Evidence-backed answer", description: "Shows the retrieved explanation and clickable citations." },
-    ],
-    tips: [
-      "Use this for audits and supervisor questions.",
-      "Tool hashes and versions are advanced evidence, not daily operator controls.",
-      "Prefer the assistant for plain-language explanations.",
-    ],
   },
 ];
 
@@ -1029,7 +929,7 @@ export default function MigrationGovernance() {
       <aside className="dq-sidebar next-context-nav">
         <div className="dq-brand next-context-heading">
           <div className="dq-brand-mark next-context-icon"><DatabaseZap size={19} /></div>
-          <div><h1>Release governance</h1><p>Promote trusted metadata</p></div>
+          <div><h1>Governance</h1></div>
           <button
             type="button"
             className="mg-sidebar-toggle"
@@ -1070,13 +970,6 @@ export default function MigrationGovernance() {
             <button className="mg-screen-refresh" title={`Refresh ${NAV.find(([id]) => id === tab)?.[1] || "screen"}`} onClick={refresh} disabled={busy || !exportId}>
               <RefreshCcw size={15} />{busy ? "Refreshing" : "Refresh"}
             </button>
-            <TutorialOverlay
-              namespace="migration-governance"
-              screenKey={tab}
-              tutorials={GOVERNANCE_TUTORIALS}
-              onScreenChange={navigateTab}
-              autoOpen={false}
-            />
             <button className="mg-assistant-toggle" onClick={() => setAssistantOpen((value) => !value)}><MessageCircle size={15} />Assistant</button>
           </div>
         </header>

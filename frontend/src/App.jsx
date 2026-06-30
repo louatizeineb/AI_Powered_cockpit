@@ -675,7 +675,7 @@ export default function App() {
       <header className="next-product-bar">
         <div className="next-product-brand">
           <div className="next-product-mark"><GitBranch size={19} /></div>
-          <div><strong>Athena</strong><span>Data intelligence</span></div>
+          <div><strong>Data Cockpit</strong></div>
         </div>
         <nav className="next-product-nav" aria-label="Product areas">
           <button aria-label="Quality" className={mode === "dqc" ? "active" : ""} onClick={() => setMode("dqc")}><ShieldCheck size={17} /><span>Quality</span></button>
