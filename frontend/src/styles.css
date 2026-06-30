@@ -44,9 +44,9 @@
 .next-product-bar {
   position: relative;
   z-index: 100;
-  height: 64px;
+  height: 56px;
   display: grid;
-  grid-template-columns: 240px minmax(0, 1fr) 240px;
+  grid-template-columns: 220px minmax(0, 1fr) 220px;
   align-items: center;
   gap: 16px;
   padding: 0 18px;
@@ -148,7 +148,7 @@
 
 .next-app .dq-shell,
 .next-app .plex-shell {
-  height: calc(100dvh - 64px);
+  height: calc(100dvh - 56px);
 }
 
 .next-workspace {
@@ -7253,22 +7253,21 @@ button {
 }
 
 .mg-empty-state {
-  min-height: 420px;
   display: grid;
   align-content: center;
   justify-items: center;
-  gap: 22px;
-  padding: 56px 24px;
+  gap: 16px;
+  padding: clamp(28px, 4vw, 44px) 24px;
   text-align: center;
-  border: 1px solid rgba(17, 24, 39, 0.08);
+  border: 1px solid var(--next-border);
   border-radius: 8px;
   background: #ffffff;
-  box-shadow: 0 18px 46px rgba(15, 23, 42, 0.06);
+  box-shadow: var(--next-shadow-sm);
 }
 
 .mg-empty-icon {
-  width: 58px;
-  height: 58px;
+  width: 48px;
+  height: 48px;
   display: grid;
   place-items: center;
   border-radius: 8px;
@@ -7277,23 +7276,24 @@ button {
 }
 
 .mg-empty-state h3 {
-  margin: 4px 0 8px;
+  margin: 2px 0 6px;
   color: #111827;
-  font-size: 24px;
+  font-size: clamp(18px, 1.6vw, 21px);
   letter-spacing: 0;
 }
 
 .mg-empty-state p {
-  max-width: 680px;
+  max-width: 560px;
   margin: 0;
   color: #64748b;
-  line-height: 1.6;
+  font-size: 13px;
+  line-height: 1.55;
 }
 
 .mg-setup-grid {
   width: min(720px, 100%);
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 10px;
 }
 
