@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Activity, AlertTriangle, Bell, Bot, CircleHelp, ClipboardPaste, Database, GitBranch,
+  Activity, AlertTriangle, Bot, ClipboardPaste, Database, GitBranch,
   LayoutDashboard, ListChecks, Network, Play, RefreshCcw,
   SearchCheck, ShieldCheck, Upload,
 } from "lucide-react";
@@ -684,9 +684,6 @@ export default function App() {
         </nav>
         <div className="next-product-actions">
           <span className="next-environment"><i /> Local</span>
-          <button title="Notifications" aria-label="Notifications"><Bell size={18} /></button>
-          <button title="Help" aria-label="Help"><CircleHelp size={18} /></button>
-          <button className="next-avatar" title="User profile">ZL</button>
         </div>
       </header>
       {mode === "dqc" ? <DqcWorkspace /> : mode === "lineage" ? <LineageExplorer /> : <MigrationGovernance />}
