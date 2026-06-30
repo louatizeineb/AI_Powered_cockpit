@@ -2,17 +2,17 @@ from __future__ import annotations
 
 from sqlalchemy.orm import Session
 
-from backend.app.eventing.config import ENABLE_EVENT_CATALOG_RESOLUTION, ENABLE_EVENT_KG_WRITES
-from backend.app.eventing.event_kg_writer import EventKGWriter
-from backend.app.eventing.normalizer import normalize_dataquality_event, normalize_pipeline_event
-from backend.app.eventing.repositories import (
+from app.eventing.config import ENABLE_EVENT_CATALOG_RESOLUTION, ENABLE_EVENT_KG_WRITES
+from app.eventing.event_kg_writer import EventKGWriter
+from app.eventing.normalizer import normalize_dataquality_event, normalize_pipeline_event
+from app.eventing.repositories import (
     save_dataquality_result,
     save_event_store,
     save_pipeline_run,
     save_resolution,
 )
-from backend.app.eventing.resolver import resolve_dataquality_event, resolve_pipeline_event
-from backend.app.eventing.validator import validate_dataquality_event, validate_pipeline_event
+from app.eventing.resolver import resolve_dataquality_event, resolve_pipeline_event
+from app.eventing.validator import validate_dataquality_event, validate_pipeline_event
 
 
 def _unresolved_reference() -> dict:

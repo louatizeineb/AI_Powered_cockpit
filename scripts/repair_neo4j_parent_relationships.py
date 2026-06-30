@@ -10,12 +10,12 @@ from sqlalchemy import create_engine, text
 
 POSTGRES_URL = os.getenv(
     "POSTGRES_URL",
-    "postgresql+psycopg2://postgres:louatiza@localhost/DataGalaxy_tables",
+    "postgresql+psycopg2://postgres:change_me@localhost/DataGalaxy_tables",
 )
 
 NEO4J_URI = os.getenv("NEO4J_URI", "bolt://127.0.0.1:7687")
 NEO4J_USER = os.getenv("NEO4J_USER", "neo4j")
-NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "bpi_cockpit")
+NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "change_me")
 
 BATCH_SIZE_CONTAINS = int(os.getenv("BATCH_SIZE_CONTAINS", "500"))
 BATCH_SIZE_FIELDS = int(os.getenv("BATCH_SIZE_FIELDS", "200"))

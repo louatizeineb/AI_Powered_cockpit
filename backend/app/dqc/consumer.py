@@ -4,18 +4,18 @@ import json
 
 from confluent_kafka import Consumer, KafkaException
 
-from backend.app.db import SessionLocal
-from backend.app.dqc.config import (
+from app.db import SessionLocal
+from app.dqc.config import (
     DQC_CONSUMER_GROUP,
     ENABLE_DQC_DLQ_LOGGING,
     ENABLE_DQC_EVENT_KG_WRITES,
     KAFKA_BOOTSTRAP_SERVERS,
 )
-from backend.app.dqc.dlq import emit_dlq_observability_log
-from backend.app.dqc.event_kg_writer import DQCEventKGWriter
-from backend.app.dqc.repositories import save_dqc_dlq_event
-from backend.app.dqc.service import process_dqc_event
-from backend.app.dqc.topics import DQC_RAW_TOPIC
+from app.dqc.dlq import emit_dlq_observability_log
+from app.dqc.event_kg_writer import DQCEventKGWriter
+from app.dqc.repositories import save_dqc_dlq_event
+from app.dqc.service import process_dqc_event
+from app.dqc.topics import DQC_RAW_TOPIC
 
 
 def get_consumer() -> Consumer:

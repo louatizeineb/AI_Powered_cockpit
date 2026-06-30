@@ -5,7 +5,7 @@ from pathlib import Path
 from uuid import uuid4
 
 from fastapi import APIRouter, UploadFile, File, Query, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from sqlalchemy import text
 
 from app.config import get_settings
@@ -20,7 +20,7 @@ router = APIRouter(prefix="/dqc-resolution", tags=["DQC Resolution"])
 
 class DatabaseConnectRequest(BaseModel):
     table_name: str | None = None
-    limit: int = 1000
+    limit: int = Field(default=1000, ge=1, le=settings.dqc_database_max_rows)
 
 
 class ReviewApproveRequest(BaseModel):
@@ -39,6 +39,22 @@ def _safe_filename(name: str | None) -> str:
     suffix = Path(raw).suffix.lower()
     stem = re.sub(r"[^A-Za-z0-9_.-]+", "_", stem).strip("._") or "dqc-upload"
     return f"{stem}-{uuid4().hex[:10]}{suffix}"
+
+
+async def _save_upload(file: UploadFile, target: Path) -> int:
+    total = 0
+    with target.open("wb") as output:
+        while chunk := await file.read(settings.dqc_upload_chunk_bytes):
+            total += len(chunk)
+            if total > settings.dqc_upload_max_bytes:
+                raise HTTPException(
+                    status_code=413,
+                    detail=f"Uploaded file exceeds the {settings.dqc_upload_max_bytes // (1024 * 1024)} MB limit",
+                )
+            output.write(chunk)
+    if total == 0:
+        raise ValueError("Uploaded file is empty")
+    return total
 
 
 @router.post("/process/event")
@@ -71,27 +87,27 @@ async def upload_dqc_file(file: UploadFile = File(...)):
     target = upload_dir / _safe_filename(file.filename)
 
     try:
-        content = await file.read()
-        if not content:
-            raise ValueError("Uploaded file is empty")
-        target.write_bytes(content)
-
+        bytes_received = await _save_upload(file, target)
         events = read_dqc_file(target)
         stats = process_many(events, source_system=f"upload:{file.filename}")
         return {
             "status": "completed",
             "filename": file.filename,
             "saved_as": str(target),
+            "bytes_received": bytes_received,
             "rows_detected": len(events),
             "result": stats,
         }
     except HTTPException:
+        target.unlink(missing_ok=True)
         raise
     except Exception as exc:
         raise HTTPException(
             status_code=500,
             detail=f"DQC upload processing failed for '{file.filename}': {exc}",
         ) from exc
+    finally:
+        await file.close()
 
 
 @router.post("/connect/database")
@@ -115,12 +131,12 @@ def connect_database(payload: DatabaseConnectRequest):
 
 
 @router.get("/resolved")
-def list_resolved(limit: int = Query(100, le=1000)):
+def list_resolved(limit: int = Query(100, ge=1, le=1000)):
     return {"items": repo.list_resolved(limit=limit)}
 
 
 @router.get("/unresolved")
-def list_unresolved(limit: int = Query(100, le=1000)):
+def list_unresolved(limit: int = Query(100, ge=1, le=1000)):
     return {"items": repo.list_dlq(limit=limit)}
 
 

@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from sqlalchemy.orm import Session
 
-from backend.app.dqc.business_rules import validate_dataquality_business_rules
-from backend.app.dqc.config import ENABLE_DQC_CATALOG_RESOLUTION, ENABLE_DQC_EVENT_KG_WRITES
-from backend.app.dqc.event_kg_writer import DQCEventKGWriter
-from backend.app.dqc.normalizer import normalize_dataquality_event
-from backend.app.dqc.repositories import save_dqc_event_store, save_dqc_resolution, save_dqc_result
-from backend.app.dqc.resolver import resolve_dataquality_event
-from backend.app.dqc.validator import validate_dataquality_event
+from app.dqc.business_rules import validate_dataquality_business_rules
+from app.dqc.config import ENABLE_DQC_CATALOG_RESOLUTION, ENABLE_DQC_EVENT_KG_WRITES
+from app.dqc.event_kg_writer import DQCEventKGWriter
+from app.dqc.normalizer import normalize_dataquality_event
+from app.dqc.repositories import save_dqc_event_store, save_dqc_resolution, save_dqc_result
+from app.dqc.resolver import resolve_dataquality_event
+from app.dqc.validator import validate_dataquality_event
 
 
 def _resolution_disabled() -> dict:

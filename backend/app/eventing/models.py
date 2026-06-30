@@ -4,7 +4,7 @@ from sqlalchemy import Column, DateTime, Float, Integer, JSON, Text, func
 
 # This expects your existing backend/app/db.py to expose Base.
 # If your Base is elsewhere, change only this import.
-from backend.app.db import Base
+from app.db import Base
 
 
 class EventStore(Base):

@@ -5,11 +5,13 @@ from sqlalchemy import create_engine
 
 POSTGRES_URL = os.getenv(
     "POSTGRES_URL",
-    "postgresql+psycopg2://postgres:louatiza@localhost/DataGalaxy_tables",
+    "postgresql+psycopg2://postgres:change_me@localhost/DataGalaxy_tables",
 )
 
+ROOT_DIR = Path(__file__).resolve().parents[1]
+
 INPUT_FILES = [
-    Path("../Quality_Topic_extract.parquet"),
+    ROOT_DIR / "data" / "samples" / "Quality_Topic_extract.parquet",
 ]
 
 TABLE_NAME = "DQC"

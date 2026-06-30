@@ -17,7 +17,15 @@ ENV/
 # Environment and secrets
 .env
 .env.*
+*.env
+*.env.*
+configs/migration_v2/local_env.yaml
+**/.env
+**/.env.*
 !.env.example
+!.env.*.example
+!**/.env.example
+!**/.env.*.example
 
 # Node / frontend
 node_modules/
@@ -47,5 +55,26 @@ Thumbs.db
 # Runtime / generated outputs
 backend/benchmark_results/
 scripts/*_audit.csv
-/renamed/
-/tables athena/
+**/data/
+**/storage/uploads/
+/legacy/generated_reports/
+*_report.json
+
+# Local datasets and database files
+*.csv
+*.tsv
+*.jsonl
+*.ndjson
+*.xlsx
+*.xls
+*.parquet
+*.feather
+*.avro
+*.db
+*.sqlite
+*.sqlite3
+*.pkl
+*.pickle
+*.joblib
+*.npy
+*.npz

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from neo4j import GraphDatabase
 
-from backend.app.dqc.config import EVENT_NEO4J_PASSWORD, EVENT_NEO4J_URI, EVENT_NEO4J_USER
+from app.dqc.config import EVENT_NEO4J_PASSWORD, EVENT_NEO4J_URI, EVENT_NEO4J_USER
 
 
 class DQCEventKGWriter:

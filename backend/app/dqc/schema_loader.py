@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from backend.app.dqc.config import DQC_SCHEMA_DIR
+from app.dqc.config import DQC_SCHEMA_DIR
 
 
 def load_json_schema(filename: str) -> dict:

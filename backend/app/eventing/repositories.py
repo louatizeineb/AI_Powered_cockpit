@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from sqlalchemy.orm import Session
 
-from backend.app.eventing.config import EVENT_ENVIRONMENT
-from backend.app.eventing.models import (
+from app.eventing.config import EVENT_ENVIRONMENT
+from app.eventing.models import (
     DataQualityCheckResult,
     EventCatalogResolution,
     EventDLQ,

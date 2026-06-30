@@ -1,0 +1,18 @@
+services:
+  schema-intelligence-neo4j:
+    image: neo4j:5-community
+    container_name: neo4j-schema-intelligence
+    ports:
+      - "7477:7474"
+      - "7690:7687"
+    environment:
+      NEO4J_AUTH: neo4j/${SCHEMA_INTELLIGENCE_NEO4J_PASSWORD:-change_me}
+      NEO4J_server_memory_heap_initial__size: 512M
+      NEO4J_server_memory_heap_max__size: 1G
+      NEO4J_server_memory_pagecache_size: 512M
+      NEO4J_server_config_strict__validation_enabled: "false"
+    volumes:
+      - schema_intelligence_neo4j_data:/data
+
+volumes:
+  schema_intelligence_neo4j_data:

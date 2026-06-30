@@ -2,7 +2,7 @@ from __future__ import annotations
 import uuid
 from app.dqc.resolution.validator import validate_schema, validate_counts
 from app.dqc.resolution.normalizer import normalize_event
-from app.dqc.resolution.matcher import generate_candidates
+from app.dqc.resolution.matcher import embedding_scope, generate_candidates, list_scoped_embeddings
 from app.dqc.resolution.scoring import confidence
 from app.dqc.resolution.llm_analyzer import explain_unresolved
 from app.dqc.resolution import repository as repo
@@ -12,7 +12,15 @@ from app.observability.logger import log_event
 settings = get_settings()
 
 
-def process_event(event: dict, source_system: str = "api", run_id: str | None = None) -> dict:
+EmbeddingCache = dict[tuple[str | None, str | None], list[dict]]
+
+
+def process_event(
+    event: dict,
+    source_system: str = "api",
+    run_id: str | None = None,
+    embedding_cache: EmbeddingCache | None = None,
+) -> dict:
     run_id = run_id or str(uuid.uuid4())
     log_event(run_id, "DQC_RECEIVED", "INFO", "DQC event received")
     raw_id = repo.save_raw(event, run_id=run_id, source_system=source_system)
@@ -33,7 +41,13 @@ def process_event(event: dict, source_system: str = "api", run_id: str | None = 
     normalized_id = repo.save_normalized(raw_id, normalized)
     log_event(run_id, "NORMALIZATION", "INFO", "DQC event normalized", {"normalized_id": normalized_id})
 
-    candidates = generate_candidates(normalized, use_embeddings=True)
+    embedding_rows = None
+    if embedding_cache is not None:
+        scope = embedding_scope(normalized)
+        if scope not in embedding_cache:
+            embedding_cache[scope] = list_scoped_embeddings(normalized)
+        embedding_rows = embedding_cache[scope]
+    candidates = generate_candidates(normalized, use_embeddings=True, embedding_rows=embedding_rows)
     if candidates:
         repo.save_candidates(normalized_id, candidates)
 
@@ -64,8 +78,9 @@ def process_event(event: dict, source_system: str = "api", run_id: str | None = 
 def process_many(events: list[dict], source_system: str = "batch") -> dict:
     run_id = str(uuid.uuid4())
     stats = {"run_id": run_id, "received": len(events), "processed": 0, "matched": 0, "review": 0, "dlq": 0}
+    embedding_cache: EmbeddingCache = {}
     for event in events:
-        result = process_event(event, source_system=source_system, run_id=run_id)
+        result = process_event(event, source_system=source_system, run_id=run_id, embedding_cache=embedding_cache)
         stats["processed"] += 1
         if result["status"] == "MATCHED":
             stats["matched"] += 1

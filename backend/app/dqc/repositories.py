@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from sqlalchemy.orm import Session
 
-from backend.app.dqc.config import DQC_ENVIRONMENT
-from backend.app.dqc.models import DQCCatalogResolution, DQCDLQ, DQCEventStore, DQCResult
+from app.dqc.config import DQC_ENVIRONMENT
+from app.dqc.models import DQCCatalogResolution, DQCDLQ, DQCEventStore, DQCResult
 
 
 def save_dqc_event_store(db: Session, normalized: dict, original_event: dict) -> DQCEventStore:

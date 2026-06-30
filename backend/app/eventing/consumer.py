@@ -4,12 +4,12 @@ import json
 
 from confluent_kafka import Consumer, KafkaException
 
-from backend.app.db import SessionLocal
-from backend.app.eventing.config import ENABLE_EVENT_KG_WRITES, EVENT_CONSUMER_GROUP, KAFKA_BOOTSTRAP_SERVERS
-from backend.app.eventing.event_kg_writer import EventKGWriter
-from backend.app.eventing.repositories import save_dlq_event
-from backend.app.eventing.service import process_dataquality_event, process_pipeline_event
-from backend.app.eventing.topics import DATAQUALITY_RAW_TOPIC, PIPELINE_RAW_TOPIC
+from app.db import SessionLocal
+from app.eventing.config import ENABLE_EVENT_KG_WRITES, EVENT_CONSUMER_GROUP, KAFKA_BOOTSTRAP_SERVERS
+from app.eventing.event_kg_writer import EventKGWriter
+from app.eventing.repositories import save_dlq_event
+from app.eventing.service import process_dataquality_event, process_pipeline_event
+from app.eventing.topics import DATAQUALITY_RAW_TOPIC, PIPELINE_RAW_TOPIC
 
 
 def get_consumer() -> Consumer:

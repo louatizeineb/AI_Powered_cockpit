@@ -6,10 +6,11 @@ from pathlib import Path
 
 import polars as pl
 
-INPUT_DIR = Path("../tables athena")
+ROOT_DIR = Path(__file__).resolve().parents[1]
+INPUT_DIR = ROOT_DIR / "data" / "raw" / "athena"
 INPUT_FILE = "usag_usage.csv"
-OUTPUT_DIR = Path("../renamed")
-OUTPUT_DIR.mkdir(exist_ok=True)
+OUTPUT_DIR = ROOT_DIR / "data" / "processed"
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 USAGE_RENAME = {
     "v_tech_ident_entt": "usage_uuid",
@@ -312,10 +313,10 @@ def process_usage() -> pl.DataFrame:
     df.write_csv(clean_path)
     print(f"[SAVE] {clean_path} ({df.height} rows × {df.width} cols)")
 
-    neo4j_df = df.filter(pl.col("status") == "Validated") if "status" in df.columns else df
+    neo4j_df = df
     neo4j_path = OUTPUT_DIR / "usage_neo4j.csv"
     neo4j_df.write_csv(neo4j_path)
-    print(f"[SAVE] {neo4j_path} ({neo4j_df.height} rows)")
+    print(f"[SAVE] {neo4j_path} ({neo4j_df.height} rows, all statuses)")
 
     mapping_path = OUTPUT_DIR / "usage_column_mapping.json"
     with open(mapping_path, "w", encoding="utf-8") as f:

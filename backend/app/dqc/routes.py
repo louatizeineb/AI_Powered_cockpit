@@ -4,11 +4,11 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
-from backend.app.db import get_db
-from backend.app.dqc.models import DQCCatalogResolution, DQCDLQ, DQCEventStore, DQCResult
-from backend.app.dqc.producer import publish_event
-from backend.app.dqc.synthetic_generator import make_bad_counts_event, make_valid_event
-from backend.app.dqc.topics import DQC_RAW_TOPIC
+from app.db import get_db
+from app.dqc.models import DQCCatalogResolution, DQCDLQ, DQCEventStore, DQCResult
+from app.dqc.producer import publish_event
+from app.dqc.synthetic_generator import make_bad_counts_event, make_valid_event
+from app.dqc.topics import DQC_RAW_TOPIC
 
 router = APIRouter(prefix="/dqc", tags=["dqc"])
 

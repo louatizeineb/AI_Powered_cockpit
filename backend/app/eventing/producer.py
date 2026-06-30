@@ -4,7 +4,7 @@ import json
 
 from confluent_kafka import Producer
 
-from backend.app.eventing.config import KAFKA_BOOTSTRAP_SERVERS
+from app.eventing.config import KAFKA_BOOTSTRAP_SERVERS
 
 
 def get_producer() -> Producer:

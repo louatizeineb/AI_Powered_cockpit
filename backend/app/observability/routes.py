@@ -6,7 +6,7 @@ router = APIRouter(prefix="/observability", tags=["Observability"])
 
 
 @router.get("/logs")
-def list_logs(run_id: str | None = None, limit: int = Query(100, le=1000)):
+def list_logs(run_id: str | None = None, limit: int = Query(100, ge=1, le=1000)):
     where = "WHERE run_id = :run_id" if run_id else ""
     params = {"limit": limit}
     if run_id:

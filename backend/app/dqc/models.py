@@ -3,7 +3,7 @@ from __future__ import annotations
 from sqlalchemy import Column, DateTime, Float, Integer, JSON, Text, func
 
 # Your existing backend/app/db.py must expose Base.
-from backend.app.db import Base
+from app.db import Base
 
 
 class DQCEventStore(Base):

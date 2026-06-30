@@ -13,12 +13,12 @@ from sqlalchemy import create_engine, text
 
 POSTGRES_URL = os.getenv(
     "POSTGRES_URL",
-    "postgresql+psycopg2://postgres:louatiza@localhost/DataGalaxy_tables",
+    "postgresql+psycopg2://postgres:change_me@localhost/DataGalaxy_tables",
 )
 
 NEO4J_URI = os.getenv("NEO4J_URI", "bolt://127.0.0.1:7687")
 NEO4J_USER = os.getenv("NEO4J_USER", "neo4j")
-NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "bpi_cockpit")
+NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "change_me")
 
 DEFAULT_BATCH_SIZE = int(os.getenv("BATCH_SIZE", "1000"))
 
@@ -80,6 +80,23 @@ class Importer:
 
     def close(self) -> None:
         self.neo4j.close()
+
+    def refresh_lineage_search_read_model(self) -> None:
+        print("\nPublishing indexed lineage search documents...")
+        with self.pg.begin() as conn:
+            available = conn.execute(
+                text("SELECT to_regprocedure('refresh_lineage_search_documents()')")
+            ).scalar()
+            if available is None:
+                print("  search read model migration not installed; skipping")
+                return
+            result = conn.execute(
+                text("SELECT * FROM refresh_lineage_search_documents()")
+            ).mappings().one()
+        print(
+            f"  graph version: {result['graph_version']}, "
+            f"documents: {result['document_count']}"
+        )
 
     def existing_tables(self) -> set[str]:
         if self._tables is not None:
@@ -193,6 +210,36 @@ class Importer:
             FOR (n:BusinessTerm)
             REQUIRE n.term_id IS UNIQUE
             """,
+            """
+            CREATE CONSTRAINT data_processing_node_id IF NOT EXISTS
+            FOR (n:DataProcessing)
+            REQUIRE n.node_id IS UNIQUE
+            """,
+            """
+            CREATE CONSTRAINT data_processing_item_node_id IF NOT EXISTS
+            FOR (n:DataProcessingItem)
+            REQUIRE n.node_id IS UNIQUE
+            """,
+            """
+            CREATE INDEX dg_object_path_full IF NOT EXISTS
+            FOR (n:DataGalaxyObject)
+            ON (n.path_full)
+            """,
+            """
+            CREATE INDEX dg_object_name_tech IF NOT EXISTS
+            FOR (n:DataGalaxyObject)
+            ON (n.name_tech)
+            """,
+            """
+            CREATE INDEX is_input_of_link_type IF NOT EXISTS
+            FOR ()-[r:IS_INPUT_OF]-()
+            ON (r.link_type)
+            """,
+            """
+            CREATE INDEX is_output_of_link_type IF NOT EXISTS
+            FOR ()-[r:IS_OUTPUT_OF]-()
+            ON (r.link_type)
+            """,
         ]
 
         for query in constraints:
@@ -284,6 +331,33 @@ class Importer:
 
             print(f"  rows: {len(rows)}")
             self.run_batches(query, rows, imported_from=table)
+
+    def load_usage_hierarchy_relationships(self) -> None:
+        table = self.resolve_table("usage")
+        if table is None:
+            print("\nSkipping usage hierarchy: table not found")
+            return
+
+        print(f"\nCreating CONTAINS relationships from {table}.parent_uuid...")
+        rows = self.fetch_all(f"""
+            SELECT usage_uuid, parent_uuid
+            FROM {table}
+            WHERE usage_uuid IS NOT NULL
+              AND parent_uuid IS NOT NULL
+              AND usage_uuid <> parent_uuid
+        """)
+
+        query = """
+        UNWIND $rows AS row
+        MATCH (child:Usage {usage_uuid: row.usage_uuid})
+        MATCH (parent:Usage {usage_uuid: row.parent_uuid})
+        MERGE (parent)-[r:CONTAINS]->(child)
+        SET r.imported_from = $imported_from,
+            r.source_column = 'parent_uuid'
+        """
+
+        print(f"  rows: {len(rows)}")
+        self.run_batches(query, rows, imported_from=table)
 
     def load_link_nodes(self, rows: list[dict[str, Any]], link_table: str) -> None:
         print("\nCreating lineage endpoint nodes...")
@@ -697,11 +771,13 @@ def main() -> None:
 
         if args.mode in ("all", "usage"):
             importer.load_usage_nodes()
+            importer.load_usage_hierarchy_relationships()
             importer.load_usage_relationships()
 
         if args.mode in ("all", "lineage"):
             importer.load_lineage_graph()
 
+        importer.refresh_lineage_search_read_model()
         importer.report_orphans()
         importer.print_stats()
         print("\nImport completed successfully.")

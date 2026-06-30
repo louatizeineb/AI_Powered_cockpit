@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from backend.app.eventing.config import SCHEMA_DIR
+from app.eventing.config import SCHEMA_DIR
 
 
 def load_json_schema(filename: str) -> dict:

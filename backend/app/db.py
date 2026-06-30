@@ -10,11 +10,16 @@ from app.config import get_settings
 
 settings = get_settings()
 
-pg_engine: Engine = create_engine(
-    settings.POSTGRES_URL,
-    pool_pre_ping=True,
-)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=pg_engine)
+pg_engine: Engine | None = None
+SessionLocal = None
+
+if settings.POSTGRES_URL:
+    pg_engine = create_engine(
+        settings.POSTGRES_URL,
+        pool_pre_ping=True,
+    )
+    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=pg_engine)
+
 Base = declarative_base()
 
 neo4j_driver = GraphDatabase.driver(
@@ -27,6 +32,8 @@ neo4j_driver = GraphDatabase.driver(
 
 @contextmanager
 def postgres_conn():
+    if pg_engine is None:
+        raise RuntimeError("POSTGRES_URL is not configured")
     with pg_engine.connect() as conn:
         yield conn
 
@@ -35,6 +42,16 @@ def postgres_conn():
 def neo4j_session():
     with neo4j_driver.session() as session:
         yield session
+
+
+def get_db():
+    if SessionLocal is None:
+        raise RuntimeError("POSTGRES_URL is not configured")
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 
 def check_postgres() -> bool:

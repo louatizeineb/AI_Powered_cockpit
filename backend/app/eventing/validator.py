@@ -4,7 +4,7 @@ from copy import deepcopy
 
 from jsonschema import Draft7Validator, Draft202012Validator, FormatChecker
 
-from backend.app.eventing.schema_loader import load_dataquality_schema, load_pipeline_schema
+from app.eventing.schema_loader import load_dataquality_schema, load_pipeline_schema
 
 
 class EventValidationError(Exception):

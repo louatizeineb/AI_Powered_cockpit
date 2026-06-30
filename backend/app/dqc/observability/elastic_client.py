@@ -4,7 +4,7 @@ from typing import Any
 
 from elasticsearch import Elasticsearch
 
-from backend.app.dqc.config import ELASTICSEARCH_URL
+from app.dqc.config import ELASTICSEARCH_URL
 
 
 def get_elasticsearch_client() -> Elasticsearch:

@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import Any
 
-from backend.app.dqc.config import DQC_ENVIRONMENT
-from backend.app.dqc.observability.dlq_log_formatter import format_dlq_log
-from backend.app.dqc.observability.log_events import write_dlq_log
+from app.dqc.config import DQC_ENVIRONMENT
+from app.dqc.observability.dlq_log_formatter import format_dlq_log
+from app.dqc.observability.log_events import write_dlq_log
 
 
 def emit_dlq_observability_log(

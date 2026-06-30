@@ -26,9 +26,10 @@ from datetime import datetime
 
 # ─── CONFIG ──────────────────────────────────────────────────────────────────
 
-INPUT_DIR  = Path("../tables athena")   # where the CSVs live
-OUTPUT_DIR = Path("./renamed")   # cleaned Parquet outputs
-OUTPUT_DIR.mkdir(exist_ok=True)
+ROOT_DIR = Path(__file__).resolve().parents[1]
+INPUT_DIR = ROOT_DIR / "data" / "raw" / "athena"
+OUTPUT_DIR = ROOT_DIR / "data" / "processed"
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 READ_OPTS = {"infer_schema_length": None}  # keep all as string on first pass
 
@@ -426,15 +427,10 @@ def report_nulls(df: pl.DataFrame, table_name: str) -> None:
         print(f"  [INFO] {table_name}: >90% null columns: {high_null}")
 
 
-def filter_validated_only(df: pl.DataFrame) -> pl.DataFrame:
-    """
-    Per recommendation in DataGalaxy docs: the vast majority of rows are
-    'Proposed' with doc_pct = 0. For Neo4j lineage, keep Validated only.
-    Call this only on the Neo4j-targeted output, not the full clean version.
-    """
-    if "status" not in df.columns:
-        return df
-    return df.filter(pl.col("status") == "Validated")
+def keep_all_statuses_for_neo4j(df: pl.DataFrame) -> pl.DataFrame:
+    """Keep every catalog status in the Neo4j-targeted output."""
+
+    return df
 
 
 # ─── MAIN PIPELINE ────────────────────────────────────────────────────────────
@@ -490,12 +486,12 @@ def process_table(
     df.write_parquet(out_path)
     print(f"  → Saved: {out_path}")
 
-    # 10. Save Neo4j-ready version (Validated only)
-    df_neo4j = filter_validated_only(df)
+    # 10. Save Neo4j-ready version with every status preserved
+    df_neo4j = keep_all_statuses_for_neo4j(df)
     out_neo4j = OUTPUT_DIR / f"{name}_neo4j.parquet"
     df_neo4j.write_parquet(out_neo4j)
     pct = round(df_neo4j.shape[0] / df.shape[0] * 100, 1) if df.shape[0] > 0 else 0
-    print(f"  → Neo4j subset: {df_neo4j.shape[0]} rows ({pct}% of total, Validated only)")
+    print(f"  → Neo4j subset: {df_neo4j.shape[0]} rows ({pct}% of total, all statuses)")
 
     return df
 
@@ -583,7 +579,7 @@ def print_arborescence():
 ║    │  app_code         → 'MKD', 'AAS', 'ABL'                 ║
 ║    │  techno           → Oracle / Kafka / PostgreSQL          ║
 ║    │  security_level   → Confidentiel / Public / Interne      ║
-║    │  status           → Validated (filtered for Neo4j)       ║
+║    │  status           → preserved for audit/filtering        ║
 ║    │                                                          ║
 ║    └─[:HAS_CONTAINER]──► (:Container)                        ║
 ║         │  entity_type → Directory / Schema / Database        ║

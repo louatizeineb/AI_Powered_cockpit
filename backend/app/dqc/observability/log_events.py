@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from typing import Any
 
-from backend.app.dqc.config import DQC_DLQ_LOG_FILE, DQC_LOG_DIR
+from app.dqc.config import DQC_DLQ_LOG_FILE, DQC_LOG_DIR
 
 
 def write_dlq_log(document: dict[str, Any]) -> None:

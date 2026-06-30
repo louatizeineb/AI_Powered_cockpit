@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schema.local/dqc/dataqualitycheckresult-v2.json",
+  "title": "DataQualityCheckResult v2",
+  "type": "object",
+  "required": ["payload", "metadata"],
+  "properties": {
+    "payload": {
+      "type": "object",
+      "required": ["entity"],
+      "properties": {
+        "entity": {
+          "type": "object",
+          "required": ["type", "data"],
+          "properties": {
+            "type": {"const": "DataQualityCheckResult"},
+            "idRef": {"type": ["string", "null"]},
+            "data": {
+              "type": "object",
+              "required": [
+                "applicationCode",
+                "controlledObjectName",
+                "controlledObjectType",
+                "controlName",
+                "executionTimestamp",
+                "businessDate",
+                "controlledItemCount",
+                "okCount",
+                "koCount",
+                "controlTool"
+              ],
+              "properties": {
+                "applicationCode": {"type": "string", "minLength": 1},
+                "controlledObjectName": {"type": "string", "minLength": 1},
+                "controlledObjectType": {"type": "string", "minLength": 1},
+                "controlledSourceName": {"type": ["string", "null"]},
+                "businessTermName": {"type": ["string", "null"]},
+                "controlName": {"type": "string", "minLength": 1},
+                "qualityDimension": {"type": ["string", "null"]},
+                "acceptanceThreshold": {"type": ["number", "integer", "string", "null"]},
+                "executionTimestamp": {"type": "string"},
+                "businessDate": {"type": "string"},
+                "controlledItemCount": {"type": ["integer", "string"]},
+                "okCount": {"type": ["integer", "string"]},
+                "koCount": {"type": ["integer", "string"]},
+                "controlTool": {"type": "string", "minLength": 1},
+                "comment": {"type": ["string", "null"]},
+                "errors": {"type": ["array", "null"]}
+              },
+              "additionalProperties": true
+            },
+            "links": {"type": ["array", "null"]}
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "eventId": {"type": ["string", "null"]}
+      },
+      "additionalProperties": true
+    },
+    "origin": {"type": ["object", "null"]}
+  },
+  "additionalProperties": true
+}
